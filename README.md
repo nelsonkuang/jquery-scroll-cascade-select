@@ -9,6 +9,10 @@ Support swipping up / down, but not mouse dragging up / down
 
 check the address.html example.
 
+or
+
+[live Demo](http://sandbox.runjs.cn/show/zmqwsarf), please use mobile phone mode to view the demo!
+
 
 ##License:MIT
 
