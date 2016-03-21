@@ -15,4 +15,6 @@ check the address.html example.
 
 ##Todo:
 
-Add mouse dragging events
+Add mouse dragging events.
+
+Add more samples.
