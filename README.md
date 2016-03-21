@@ -17,4 +17,4 @@ check the address.html example.
 
 Add mouse dragging events.
 
-Add more samples.
+Add more examples.
