@@ -69,7 +69,7 @@
     SCS.scrollCascadeSelect = function (options) {
         var defaults = {
             el: undefined,
-            addrArr: [],
+            dataArr: [],
             startIndex: 0,
             onInit: function (selectedItem, selectedIndex) { },//exposing the selectedItem and selectIndex parameters for outter using
             onChange: function (selectedItem, selectedIndex) { }//exposing the selectedItem and selectIndex parameters for outter using
@@ -80,13 +80,13 @@
             startPos = { x: 0, y: 0 },//a relative start position 
             STARTPOS = { x: 0, y: 0 },//a precise start position 
             currentPos = { x: 0, y: 0 },
-            addrArr = options.addrArr,
+            dataArr = options.dataArr,
             startIndex = options.startIndex,
             _self = this;//use '_self' to store 'this' in case of some misunderstanding.
         //exposing the selected item and index for outter use
         _self.selectedIndex = startIndex;
         _self.getSelectedItem = function () {
-            return addrArr[this.selectedIndex];
+            return dataArr[this.selectedIndex];
         };
         //bind all the touch event
         el.addEventListener('touchstart', function (event) {
@@ -143,13 +143,13 @@
             _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
             options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
         });
-        //a public out-exposing function, render / re-render the scroller, based on the parameters 'newAddrArr' and 'newStartIndex' 
-        _self.render = function (newAddrArr, newStartIndex, callback) {
+        //a public out-exposing function, render / re-render the scroller, based on the parameters 'newDataArr' and 'newStartIndex' 
+        _self.render = function (newDataArr, newStartIndex, callback) {
             var html = "",
                 sIndex = newStartIndex || 0,
                 currentTranslatedY = 80 - sIndex * 40;
-            if (newAddrArr != undefined)
-                newAddrArr.forEach(function (obj, index) {
+            if (newDataArr != undefined)
+                newDataArr.forEach(function (obj, index) {
                     if (sIndex != index)
                         html += '<div class="scs_item" data-val="' + obj.key + '">' + obj.val + '</div>';
                     else {
@@ -161,18 +161,18 @@
                 return;
             }
             This.html(html);
-            This.attr("data-height", newAddrArr.length * 40);
+            This.attr("data-height", newDataArr.length * 40);
             This.css('-webkit-transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
             This.css('transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
             _self.selectedIndex = sIndex;
-            addrArr = newAddrArr;
+            dataArr = newDataArr;
             if (typeof callback === 'function')
                 callback();
 
         };
         //private funtion，initialization
         var init = function () {
-            _self.render(addrArr, startIndex);
+            _self.render(dataArr, startIndex);
             options.onInit(_self.getSelectedItem(), _self.selectedIndex);//trigger the onInit callback function
         };
         init();//bootstrap a scroller
