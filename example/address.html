@@ -102,12 +102,12 @@
                 });
                 var distScroller = new SCS.scrollCascadeSelect({
                     el: "#scs_items_dist",
-                    addrArr: startDists,
+                    dataArr: startDists,
                     startIndex: distStartIndex
                 });
                 var cityScroller = new SCS.scrollCascadeSelect({
                     el: "#scs_items_city",
-                    addrArr: startCities,
+                    dataArr: startCities,
                     startIndex: cityStartIndex,
                     onChange: function (selectedItem, selectedIndex) {
                         distScroller.render(getAddrsArrayById(selectedItem.key), 0);//re-render distScroller when cityScroller change
@@ -115,7 +115,7 @@
                 });
                 var provScroller = new SCS.scrollCascadeSelect({
                     el: "#scs_items_prov",
-                    addrArr: PROVINCES,
+                    dataArr: PROVINCES,
                     startIndex: provStartIndex,
                     onChange: function (selectedItem, selectedIndex) {//re-render both cityScroller and distScroller when provScroller change
                         cityScroller.render(getAddrsArrayById(selectedItem.key), 0);
