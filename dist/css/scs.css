@@ -52,7 +52,7 @@
 }
 .cascade_scroll_selects .scs_container .scs_dialog .scs_selects_group {
   padding: .5em .25em;
-  min-width: 80px;
+  min-width: 40px;
   max-width: 100%;
   -webkit-box-flex: 1;
   -webkit-flex: 1 auto;
