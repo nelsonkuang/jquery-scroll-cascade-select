@@ -46,7 +46,7 @@
                 var result = 0;
                 if (StartArr != undefined)
                     StartArr.forEach(function (obj, index) {
-                        if (obj.key == key){
+                        if (obj.key == key) {
                             result = index;
                             return false;
                         }
@@ -102,12 +102,12 @@
                 });
                 var distScroller = new SCS.scrollCascadeSelect({
                     el: "#scs_items_dist",
-                    dataArr: startDists,
+                    addrArr: startDists,
                     startIndex: distStartIndex
                 });
                 var cityScroller = new SCS.scrollCascadeSelect({
                     el: "#scs_items_city",
-                    dataArr: startCities,
+                    addrArr: startCities,
                     startIndex: cityStartIndex,
                     onChange: function (selectedItem, selectedIndex) {
                         distScroller.render(getAddrsArrayById(selectedItem.key), 0);//re-render distScroller when cityScroller change
@@ -115,7 +115,7 @@
                 });
                 var provScroller = new SCS.scrollCascadeSelect({
                     el: "#scs_items_prov",
-                    dataArr: PROVINCES,
+                    addrArr: PROVINCES,
                     startIndex: provStartIndex,
                     onChange: function (selectedItem, selectedIndex) {//re-render both cityScroller and distScroller when provScroller change
                         cityScroller.render(getAddrsArrayById(selectedItem.key), 0);
