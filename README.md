@@ -22,3 +22,5 @@ or
 ~~Add mouse dragging effect.~~
 
 Add more examples.
+
+add scroll triggering option changing.
