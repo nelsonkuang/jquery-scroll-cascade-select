@@ -1,4 +1,4 @@
-(function (root,$) {
+(function (root, $) {
     root.SCS = {
         version: '1.0.0'
     };
@@ -69,7 +69,7 @@
     SCS.scrollCascadeSelect = function (options) {
         var defaults = {
             el: undefined,
-            addrArr: [],
+            dataArr: [],
             startIndex: 0,
             onInit: function (selectedItem, selectedIndex) { },//exposing the selectedItem and selectIndex parameters for outter using
             onChange: function (selectedItem, selectedIndex) { }//exposing the selectedItem and selectIndex parameters for outter using
@@ -77,11 +77,11 @@
         var options = $.extend({}, defaults, options);
         var This = $(options.el),
             el = This.get(0),
-            addrArr = options.addrArr,
+            dataArr = options.dataArr,
             startIndex = options.startIndex,
             _self = this;//use '_self' to store 'this' in case of some misunderstanding.
         var isDown = false,
-            havedClicked=false,
+            havedClicked = false,
             startPosY = 0,
             currentPosY = 0,
             startTranslatedY = 0,
@@ -96,7 +96,7 @@
         //exposing the selected item and index for outter use
         _self.selectedIndex = startIndex;
         _self.getSelectedItem = function () {
-            return addrArr[this.selectedIndex];
+            return dataArr[this.selectedIndex];
         };
         if (supportedTouch) {
             //bind all the touch event
@@ -230,7 +230,7 @@
                   t = Math.abs(v) / 0.001;
                         currentTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
                         currentTranslatedY += s;
-                            residue = currentTranslatedY % 40;
+                        residue = currentTranslatedY % 40;
                         if (Math.abs(residue) >= 20) {
                             if (residue < 0)
                                 currentTranslatedY += ((40 + residue) * -1);
@@ -280,13 +280,13 @@
                 havedClick = false;
             }
         });
-        //a public out-exposing function, render / re-render the scroller, based on the parameters 'newAddrArr' and 'newStartIndex' 
-        _self.render = function (newAddrArr, newStartIndex, callback) {
+        //a public out-exposing function, render / re-render the scroller, based on the parameters 'newDataArr' and 'newStartIndex' 
+        _self.render = function (newDataArr, newStartIndex, callback) {
             var html = "",
                 sIndex = newStartIndex || 0,
                 currentTranslatedY = 80 - sIndex * 40;
-            if (newAddrArr != undefined)
-                newAddrArr.forEach(function (obj, index) {
+            if (newDataArr != undefined)
+                newDataArr.forEach(function (obj, index) {
                     if (sIndex != index)
                         html += '<div class="scs_item" data-val="' + obj.key + '">' + obj.val + '</div>';
                     else {
@@ -298,20 +298,20 @@
                 return;
             }
             This.html(html);
-            This.attr("data-height", newAddrArr.length * 40);
+            This.attr("data-height", newDataArr.length * 40);
             This.css('-webkit-transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
             This.css('transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
             _self.selectedIndex = sIndex;
-            addrArr = newAddrArr;
+            dataArr = newDataArr;
             if (typeof callback === 'function')
                 callback();
 
         };
         //private funtion，initialization
         var init = function () {
-            _self.render(addrArr, startIndex);
+            _self.render(dataArr, startIndex);
             options.onInit(_self.getSelectedItem(), _self.selectedIndex);//trigger the onInit callback function
         };
         init();//bootstrap a scroller
     }
-})(this,jQuery);
+})(this, jQuery);
