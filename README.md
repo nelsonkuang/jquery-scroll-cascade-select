@@ -23,4 +23,4 @@ or
 
 Add more examples.
 
-add scroll triggering option changing.
+Add scroll triggering options changing.
