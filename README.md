@@ -19,6 +19,6 @@ or
 
 ##Todo:
 
-Add mouse dragging effect.
+~~Add mouse dragging effect.~~
 
 Add more examples.
