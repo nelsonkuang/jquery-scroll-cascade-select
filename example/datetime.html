@@ -175,17 +175,17 @@
                     dayScroller.render(getDaysByMonthNYear(selectedItem.key , yearScroller.getSelectedItem().key), 0); //re-render dayScroller when cityScroller change
                 }
             });
-            var dayScroller = new SCS.scrollCascadeSelect({
+            var hourScroller = new SCS.scrollCascadeSelect({
                 el: "#scs_items_hour",
                 dataArr: HOURS,
                 startIndex: hourStartIndex
             });
-            var dayScroller = new SCS.scrollCascadeSelect({
+            var minuteScroller = new SCS.scrollCascadeSelect({
                 el: "#scs_items_minute",
                 dataArr: MINUTES,
                 startIndex: minuteStartIndex
             });
-            var dayScroller = new SCS.scrollCascadeSelect({
+            var secondScroller = new SCS.scrollCascadeSelect({
                 el: "#scs_items_second",
                 dataArr: SECONDS,
                 startIndex: secondStartIndex
