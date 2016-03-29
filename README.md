@@ -16,7 +16,7 @@ or
 
 ##License:
 
-MIT
+[MIT](https://github.com/nelsonkuang/jquery-scroll-cascade-select/blob/master/LICENSE)
 
 ##Todo:
 
