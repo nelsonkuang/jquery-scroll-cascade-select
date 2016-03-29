@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Datetime Scroll Cascade Select</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link href="../dist/css/layout.min.css" rel="stylesheet" />
+    <link href="../dist/css/scs.min.css" rel="stylesheet" />
+    <style>
+    #myDate {
+        width: 90%;
+        font-size: 16px;
+        border: 1px solid #bababa;
+        border-radius: 4px;
+        padding: 10px;
+        margin-top: 10px;
+        color: gray;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="text-align:center">
+        <input type="text" readonly placeholder="Click me to pick an datetime" id="myDate" name="addr" data-key="2015-8-12-23-36-45" value="2015年08月12日23时36分45秒" />
+    </div>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="../dist/js/jquery.scs.min.js"></script>
+     <script>
+        function getDaysByMonthNYear(month, year) {
+            var count = 0, days = [];
+            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+                count = 31;
+            } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+                count = 30;
+            } else if (month == 2) {
+                if (isLeapYear(year)) {
+                    count = 29;
+                } else {
+                    count = 28;
+                }
+            }
+            for (var i = 1; i <= count; i++) {
+                days.push({ key: i, val: i < 10 ? '0' + i : i });
+            } 
+            return days;
+        } 
+        function isLeapYear(Year) {
+            if (((Year % 4) == 0) && ((Year % 100) != 0) || ((Year % 400) == 0)) {
+                return true;
+            } else {
+                return false;
+            }
+        }      
+    $(function() {             
+        //bind the click event for 'input' element
+        $("#myDate").click(function() {
+            var YEARS = [],
+                MONTHS = [],
+                DAYS = [],
+                thisYear = (new Date()).getFullYear();//or from the server
+            var HOURS = [],
+                MINUTES = [],
+                SECONDS = [];
+            //YEARS MONTHS, DAYS, HOURS, MINUTES and SECONDS data，shall never change.
+            for (var i = thisYear; i >= 1910; i--) {
+                YEARS.push({
+                    key: i,
+                    val: i
+                });
+            }
+            for (var i = 1; i <= 12; i++) {
+                MONTHS.push({
+                    key: i,
+                    val: i < 10 ? '0' + i : i
+                });
+            }
+            for (var i = 0; i <= 23; i++) {
+                HOURS.push({
+                    key: i,
+                    val: i < 10 ? '0' + i : i
+                });
+            }
+            for (var i = 0; i <= 59; i++) {
+                MINUTES.push({
+                    key: i,
+                    val: i < 10 ? '0' + i : i
+                });
+                SECONDS.push({
+                    key: i,
+                    val: i < 10 ? '0' + i : i
+                });
+            }
+            //init other data.
+            var $input = $(this),
+                dataKey = $input.attr("data-key"),
+                yearKey = thisYear, //default year
+                monthKey = 1, //default month
+                dayKey = 1, //default day
+                hourKey = 0,
+                minuteKey = 0,
+                secondKey = 0,
+                yearStartIndex = 0, //default 0
+                monthStartIndex = 0, //default 0
+                dayStartIndex = 0, //default 0
+                hourStartIndex = 0,
+                minuteStartIndex = 0,
+                secondStartIndex = 0;
+
+            if (dataKey != "" && dataKey != undefined) {
+                var sArr = dataKey.split("-");
+                if (sArr.length == 6) {
+                    yearKey = sArr[0];
+                    monthKey = sArr[1];
+                    dayKey = sArr[2];
+                    hourKey = sArr[3];
+                    minuteKey = sArr[4];
+                    secondKey = sArr[5];
+                }
+                DAYS = getDaysByMonthNYear(monthKey,yearKey);                        
+                yearStartIndex = thisYear-parseInt(yearKey);
+                monthStartIndex = parseInt(monthKey)-1;
+                dayStartIndex = parseInt(dayKey) - 1;
+                hourStartIndex = hourKey;
+                minuteStartIndex = minuteKey;
+                secondStartIndex = secondKey;
+            }
+            SCS.init({
+                navArr: [{
+                    title: "年",
+                    id: "scs_items_year"
+                }, {
+                    title: "月",
+                    id: "scs_items_month"
+                }, {
+                    title: "日",
+                    id: "scs_items_day"
+                }, {
+                    title: "时",
+                    id: "scs_items_hour"
+                }, {
+                    title: "分",
+                    id: "scs_items_minute"
+                }, {
+                    title: "秒",
+                    id: "scs_items_second"
+                }],
+                onOk: function(selectedKey, selectedValue) {
+                    var strArr=selectedValue.split(" ");
+                    $input.val(strArr[0] + "年" + strArr[1] + "月" + strArr[2] + "日" + strArr[3] + "时" + strArr[4] + "分" + strArr[5] + "秒").attr("data-key", selectedKey);
+                }
+            });
+            var dayScroller = new SCS.scrollCascadeSelect({
+                el: "#scs_items_day",
+                dataArr: DAYS,
+                startIndex: dayStartIndex
+            });
+            var yearScroller = new SCS.scrollCascadeSelect({
+                el: "#scs_items_year",
+                dataArr: YEARS,
+                startIndex: yearStartIndex,
+                onChange: function(selectedItem, selectedIndex) { //re-render dayScroller when yearScroller change
+                    dayScroller.render(getDaysByMonthNYear(1,selectedItem.key), 0);
+                }
+            });
+            var monthScroller = new SCS.scrollCascadeSelect({
+                el: "#scs_items_month",
+                dataArr: MONTHS,
+                startIndex: monthStartIndex,
+                onChange: function(selectedItem, selectedIndex) {
+                    dayScroller.render(getDaysByMonthNYear(selectedItem.key , yearScroller.getSelectedItem().key), 0); //re-render dayScroller when cityScroller change
+                }
+            });
+            var dayScroller = new SCS.scrollCascadeSelect({
+                el: "#scs_items_hour",
+                dataArr: HOURS,
+                startIndex: hourStartIndex
+            });
+            var dayScroller = new SCS.scrollCascadeSelect({
+                el: "#scs_items_minute",
+                dataArr: MINUTES,
+                startIndex: minuteStartIndex
+            });
+            var dayScroller = new SCS.scrollCascadeSelect({
+                el: "#scs_items_second",
+                dataArr: SECONDS,
+                startIndex: secondStartIndex
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>
