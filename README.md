@@ -14,8 +14,9 @@ or
 [live Demo](http://sandbox.runjs.cn/show/zmqwsarf), please use mobile phone mode to view the demo!
 
 
-##License:MIT
+##License:
 
+MIT
 
 ##Todo:
 
