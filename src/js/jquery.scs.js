@@ -69,7 +69,7 @@
     SCS.scrollCascadeSelect = function (options) {
         var defaults = {
             el: undefined,
-            dataArr: [],
+            addrArr: [],
             startIndex: 0,
             onInit: function (selectedItem, selectedIndex) { },//exposing the selectedItem and selectIndex parameters for outter using
             onChange: function (selectedItem, selectedIndex) { }//exposing the selectedItem and selectIndex parameters for outter using
@@ -77,79 +77,216 @@
         var options = $.extend({}, defaults, options);
         var This = $(options.el),
             el = This.get(0),
-            startPos = { x: 0, y: 0 },//a relative start position 
-            STARTPOS = { x: 0, y: 0 },//a precise start position 
-            currentPos = { x: 0, y: 0 },
-            dataArr = options.dataArr,
+            addrArr = options.addrArr,
             startIndex = options.startIndex,
             _self = this;//use '_self' to store 'this' in case of some misunderstanding.
+        var isDown = false,
+            havedClicked=false,
+            startPosY = 0,
+            currentPosY = 0,
+            startTranslatedY = 0,
+            currentTranslatedY = startTranslatedY,
+            startTime = 0,
+            endTime = 0,
+            lastTime = (new Date()).getTime(),
+            lastPosY = 0,
+            lastV = 0,
+            supportedTouch = true;
+        try { ontouchstart; } catch (e) { supportedTouch = false; }
         //exposing the selected item and index for outter use
         _self.selectedIndex = startIndex;
         _self.getSelectedItem = function () {
-            return dataArr[this.selectedIndex];
+            return addrArr[this.selectedIndex];
         };
-        //bind all the touch event
-        el.addEventListener('touchstart', function (event) {
-            startPos = { x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY };
-            STARTPOS = { x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY };
-        }, false);
-        el.addEventListener('touchmove', function (event) {
-            event.preventDefault();//prevent default scrolling event when touch moving
-            currentPos = { x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY };
-            var movedDistance = currentPos.y - startPos.y,
-                currentTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", "")),
-                newTranslatedY = movedDistance + currentTranslatedY;
-            if (newTranslatedY > 80) {
-                newTranslatedY = 80;
-            } else if (newTranslatedY < (This.attr("data-height") - 120) * (-1)) {
-                newTranslatedY = (This.attr("data-height") - 120) * (-1);
-            }
-            This.css('-webkit-transform', 'translate3d(0, ' + newTranslatedY + 'px, 0)');
-            This.css('transform', 'translate3d(0, ' + newTranslatedY + 'px, 0)');
-            startPos = { x: currentPos.x, y: currentPos.y };
-        }, false);
-        el.addEventListener('touchend', function (event) {
-            currentPos = { x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY };
-            if (Math.abs(currentPos.y - STARTPOS.y) > 5) {//exclude the 'click' event
-                var currentTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", "")),
-                    residue = currentTranslatedY % 40;
-                if (Math.abs(residue) >= 20) {
-                    if (residue < 0)
-                        currentTranslatedY += ((40 + residue) * -1);
-                    else {
-                        currentTranslatedY += (40 - residue);
+        if (supportedTouch) {
+            //bind all the touch event
+            el.addEventListener('touchstart', function (e) {
+                startPosY = e.changedTouches[0].pageY;
+                startTime = (new Date()).getTime();
+                startTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
+                lastV = 0;
+            }, false);
+            el.addEventListener('touchmove', function (e) {
+                event.preventDefault();//prevent default scrolling event when touch moving
+                lastV = (e.changedTouches[0].pageY - lastPosY) / ((new Date()).getTime() - lastTime);
+                currentPosY = e.changedTouches[0].pageY;
+                currentTranslatedY = startTranslatedY + currentPosY - startPosY;
+                This.css({
+                    '-webkit-transition': '-webkit-transform ' + 0 + 's ease-out',
+                    '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                });
+                lastPosY = currentPosY;
+                lastTime = (new Date()).getTime();
+            }, false);
+            el.addEventListener('touchend', function (e) {
+                endTime = (new Date()).getTime();
+                if (Math.abs(currentPosY - startPosY) > 5 && endTime - startTime > 100) {
+                    var v = lastV,
+              s = v > 0 ? 0.5 * v * v / 0.001 : -0.5 * v * v / 0.001,
+              t = Math.abs(v) / 0.001;
+                    currentTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
+                    currentTranslatedY += s;
+                    var residue = currentTranslatedY % 40;
+                    if (Math.abs(residue) >= 20) {
+                        if (residue < 0)
+                            currentTranslatedY += ((40 + residue) * -1);
+                        else {
+                            currentTranslatedY += (40 - residue);
+                        }
+                    } else {
+                        currentTranslatedY -= residue;
                     }
+                    if (currentTranslatedY > 80) {
+                        currentTranslatedY = 80;
+                    } else if (currentTranslatedY < (This.attr("data-height") - 120) * (-1)) {
+                        currentTranslatedY = (This.attr("data-height") - 120) * (-1);
+                    }
+                    This.css({
+                        '-webkit-transition': '-webkit-transform ' + t / 1000 + 's ease-out',
+                        '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                    });
+                    _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
+                    This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
+                    options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
                 } else {
-                    currentTranslatedY -= residue;
+                    havedClicked = true;
                 }
-                This.css('-webkit-transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
-                This.css('transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
-                _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
-                This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
-                startPos = { x: 0, y: 0 },
-                currentPos = { x: 0, y: 0 };
-                options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
+                startPosY = 0;
+                currentPosY = 0;
+                startTranslatedY = 0;
+                currentTranslatedY = 0;
+                startTime = endTime = 0;
+                lastPosY = lastV = 0;
+            }, false);
+        } else {
+            //bind all the mouse event
+            el.onmousedown = function (e) {
+                isDown = true;
+                startPosY = e.pageY;
+                startTime = (new Date()).getTime();
+                startTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
             }
-        }, false);
+            el.onmousemove = function (e) {
+                if (isDown) {
+                    lastV = (e.pageY - lastPosY) / ((new Date()).getTime() - lastTime);
+                    currentPosY = e.pageY;
+                    currentTranslatedY = startTranslatedY + currentPosY - startPosY;
+                    This.css({
+                        '-webkit-transition': '-webkit-transform ' + 0 + 's ease-out',
+                        '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                    });
+                    lastPosY = currentPosY;
+                    lastTime = (new Date()).getTime();
+                }
+            }
+            el.onmouseup = function (e) {
+                endTime = (new Date()).getTime();
+                if (Math.abs(currentPosY - startPosY) > 5 && endTime - startTime > 100) {
+                    var v = lastV,
+              s = v > 0 ? 0.5 * v * v / 0.001 : -0.5 * v * v / 0.001,
+              t = Math.abs(v) / 0.001;
+                    currentTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
+                    currentTranslatedY += s;
+
+                    var residue = currentTranslatedY % 40;
+                    if (Math.abs(residue) >= 20) {
+                        if (residue < 0)
+                            currentTranslatedY += ((40 + residue) * -1);
+                        else {
+                            currentTranslatedY += (40 - residue);
+                        }
+                    } else {
+                        currentTranslatedY -= residue;
+                    }
+                    if (currentTranslatedY > 80) {
+                        currentTranslatedY = 80;
+                    } else if (currentTranslatedY < (This.attr("data-height") - 120) * (-1)) {
+                        currentTranslatedY = (This.attr("data-height") - 120) * (-1);
+                    }
+                    This.css({
+                        '-webkit-transition': '-webkit-transform ' + t / 1000 + 's ease-out',
+                        '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                    });
+                    _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
+                    This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
+                    options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
+                } else {
+                    havedClicked = true;
+                }
+                isDown = false;
+                startPosY = 0;
+                currentPosY = 0;
+                startTranslatedY = 0;
+                currentTranslatedY = 0;
+                startTime = endTime = 0;
+                lastPosY = lastV = 0;
+            };
+            el.onmouseleave = function (e) {
+                if (isDown) {
+                    endTime = (new Date()).getTime();
+                    if (Math.abs(currentPosY - startPosY) > 5 && endTime - startTime > 100) {//exclude the 'click' event
+                        var v = lastV,
+                  s = v > 0 ? 0.5 * v * v / 0.001 : -0.5 * v * v / 0.001,
+                  t = Math.abs(v) / 0.001;
+                        currentTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
+                        currentTranslatedY += s;
+                            residue = currentTranslatedY % 40;
+                        if (Math.abs(residue) >= 20) {
+                            if (residue < 0)
+                                currentTranslatedY += ((40 + residue) * -1);
+                            else {
+                                currentTranslatedY += (40 - residue);
+                            }
+                        } else {
+                            currentTranslatedY -= residue;
+                        }
+                        if (currentTranslatedY > 80) {
+                            currentTranslatedY = 80;
+                        } else if (currentTranslatedY < (This.attr("data-height") - 120) * (-1)) {
+                            currentTranslatedY = (This.attr("data-height") - 120) * (-1);
+                        }
+                        This.css({
+                            '-webkit-transition': '-webkit-transform ' + t / 1000 + 's ease-out',
+                            '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                        });
+                        _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
+                        This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
+                        options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
+                    }
+                    isDown = false;
+                    startPosY = 0;
+                    currentPosY = 0;
+                    startTranslatedY = 0;
+                    currentTranslatedY = 0;
+                    startTime = endTime = 0;
+                    lastPosY = lastV = 0;
+                }
+            }
+        }
         //bind a click event
         This.on("click", ".scs_item", function (e) {
-            var That = $(this),
-            itemPositionY = That.position().top,
-            currentTranslatedY = 80 - itemPositionY;
-            This.css('-webkit-transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
-            This.css('transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
-            This.find(".scs_item").removeClass("scs_selected");
-            That.addClass("scs_selected");
-            _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
-            options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
+            if (havedClicked) {
+                var That = $(this),
+                itemPositionY = That.position().top,
+                currentTranslatedY = 80 - itemPositionY;
+                This.css({
+                    '-webkit-transition': '-webkit-transform ' + 0 + 's ease-out',
+                    '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                });
+                This.find(".scs_item").removeClass("scs_selected");
+                That.addClass("scs_selected");
+                _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
+                options.onChange(_self.getSelectedItem(), _self.selectedIndex);//trigger onChange event
+                havedClick = false;
+            }
         });
-        //a public out-exposing function, render / re-render the scroller, based on the parameters 'newDataArr' and 'newStartIndex' 
-        _self.render = function (newDataArr, newStartIndex, callback) {
+        //a public out-exposing function, render / re-render the scroller, based on the parameters 'newAddrArr' and 'newStartIndex' 
+        _self.render = function (newAddrArr, newStartIndex, callback) {
             var html = "",
                 sIndex = newStartIndex || 0,
                 currentTranslatedY = 80 - sIndex * 40;
-            if (newDataArr != undefined)
-                newDataArr.forEach(function (obj, index) {
+            if (newAddrArr != undefined)
+                newAddrArr.forEach(function (obj, index) {
                     if (sIndex != index)
                         html += '<div class="scs_item" data-val="' + obj.key + '">' + obj.val + '</div>';
                     else {
@@ -161,18 +298,18 @@
                 return;
             }
             This.html(html);
-            This.attr("data-height", newDataArr.length * 40);
+            This.attr("data-height", newAddrArr.length * 40);
             This.css('-webkit-transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
             This.css('transform', 'translate3d(0, ' + currentTranslatedY + 'px, 0)');
             _self.selectedIndex = sIndex;
-            dataArr = newDataArr;
+            addrArr = newAddrArr;
             if (typeof callback === 'function')
                 callback();
 
         };
         //private funtion，initialization
         var init = function () {
-            _self.render(dataArr, startIndex);
+            _self.render(addrArr, startIndex);
             options.onInit(_self.getSelectedItem(), _self.selectedIndex);//trigger the onInit callback function
         };
         init();//bootstrap a scroller
