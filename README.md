@@ -1,7 +1,7 @@
 # jquery-scroll-cascade-select
 Scroll Cascade Select, a light-weight flexible Scroll Picker similiar to Mobiscroll. 
 
-Support swipping up / down, but not mouse dragging up / down
+Support swipping up / down, mouse dragging up / down are supported too
 
 
 ##how to use it?
