@@ -7,7 +7,7 @@ Support swipping up / down, mouse dragging up / down are supported too
 ##how to use it?
 
 
-check the address.html example.
+check the example for details.
 
 or
 
