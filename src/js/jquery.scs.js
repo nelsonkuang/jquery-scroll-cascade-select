@@ -99,7 +99,7 @@
             return dataArr[this.selectedIndex];
         };
         if (supportedTouch) {
-            //bind all the touch event
+            //bind all the touch events
             el.addEventListener('touchstart', function (e) {
                 startPosY = e.changedTouches[0].pageY;
                 startTime = (new Date()).getTime();
@@ -159,7 +159,7 @@
                 lastPosY = lastV = 0;
             }, false);
         } else {
-            //bind all the mouse event
+            //bind all the mouse events
             el.onmousedown = function (e) {
                 isDown = true;
                 startPosY = e.pageY;
