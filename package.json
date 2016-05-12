@@ -1,7 +1,7 @@
 {
   "name": "jquery-scroll-cascade-select",
   "version": "1.0.0",
-  "description": "jquery-Scroll Cascade Select",
+  "description": "Jquery Scroll Cascade Select",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
