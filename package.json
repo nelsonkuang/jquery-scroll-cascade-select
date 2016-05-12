@@ -1,12 +1,12 @@
 {
-  "name": "scroll-cascade-select",
+  "name": "jquery-scroll-cascade-select",
   "version": "1.0.0",
-  "description": "Scroll Cascade Select",
+  "description": "jquery-Scroll Cascade Select",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Nelson",
+  "author": "NelsonKuang",
   "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
