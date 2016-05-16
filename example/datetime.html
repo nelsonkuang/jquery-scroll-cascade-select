@@ -30,39 +30,44 @@
     </div>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="../dist/js/jquery.scs.min.js"></script>
-     <script>
-        function getDaysByMonthNYear(month, year) {
-            var count = 0, days = [];
-            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
-                count = 31;
-            } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-                count = 30;
-            } else if (month == 2) {
-                if (isLeapYear(year)) {
-                    count = 29;
-                } else {
-                    count = 28;
-                }
-            }
-            for (var i = 1; i <= count; i++) {
-                days.push({ key: i, val: i < 10 ? '0' + i : i });
-            } 
-            return days;
-        } 
-        function isLeapYear(Year) {
-            if (((Year % 4) == 0) && ((Year % 100) != 0) || ((Year % 400) == 0)) {
-                return true;
+    <script>
+    function getDaysByMonthNYear(month, year) {
+        var count = 0,
+            days = [];
+        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+            count = 31;
+        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+            count = 30;
+        } else if (month == 2) {
+            if (isLeapYear(year)) {
+                count = 29;
             } else {
-                return false;
+                count = 28;
             }
-        }      
-    $(function() {             
+        }
+        for (var i = 1; i <= count; i++) {
+            days.push({
+                key: i,
+                val: i < 10 ? '0' + i : i
+            });
+        }
+        return days;
+    }
+
+    function isLeapYear(Year) {
+        if (((Year % 4) == 0) && ((Year % 100) != 0) || ((Year % 400) == 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    $(function() {
         //bind the click event for 'input' element
         $("#myDate").click(function() {
             var YEARS = [],
                 MONTHS = [],
                 DAYS = [],
-                thisYear = (new Date()).getFullYear();//or from the server
+                thisYear = (new Date()).getFullYear(); //or from the server
             var HOURS = [],
                 MINUTES = [],
                 SECONDS = [];
@@ -121,72 +126,73 @@
                     minuteKey = sArr[4];
                     secondKey = sArr[5];
                 }
-                DAYS = getDaysByMonthNYear(monthKey,yearKey);                        
-                yearStartIndex = thisYear-parseInt(yearKey);
-                monthStartIndex = parseInt(monthKey)-1;
+                DAYS = getDaysByMonthNYear(monthKey, yearKey);
+                yearStartIndex = thisYear - parseInt(yearKey);
+                monthStartIndex = parseInt(monthKey) - 1;
                 dayStartIndex = parseInt(dayKey) - 1;
                 hourStartIndex = hourKey;
                 minuteStartIndex = minuteKey;
                 secondStartIndex = secondKey;
             }
+            var navArr = [{ //6 scrollers, and the title and id will be as follows:
+                title: "年",
+                id: "scs_items_year"
+            }, {
+                title: "月",
+                id: "scs_items_month"
+            }, {
+                title: "日",
+                id: "scs_items_day"
+            }, {
+                title: "时",
+                id: "scs_items_hour"
+            }, {
+                title: "分",
+                id: "scs_items_minute"
+            }, {
+                title: "秒",
+                id: "scs_items_second"
+            }];
             SCS.init({
-                navArr: [{
-                    title: "年",
-                    id: "scs_items_year"
-                }, {
-                    title: "月",
-                    id: "scs_items_month"
-                }, {
-                    title: "日",
-                    id: "scs_items_day"
-                }, {
-                    title: "时",
-                    id: "scs_items_hour"
-                }, {
-                    title: "分",
-                    id: "scs_items_minute"
-                }, {
-                    title: "秒",
-                    id: "scs_items_second"
-                }],
+                navArr: navArr,
                 onOk: function(selectedKey, selectedValue) {
-                    var strArr=selectedValue.split(" ");
+                    var strArr = selectedValue.split(" ");
                     $input.val(strArr[0] + "年" + strArr[1] + "月" + strArr[2] + "日" + strArr[3] + "时" + strArr[4] + "分" + strArr[5] + "秒").attr("data-key", selectedKey);
                 }
             });
             var dayScroller = new SCS.scrollCascadeSelect({
-                el: "#scs_items_day",
+                el: "#" + navArr[2].id,
                 dataArr: DAYS,
                 startIndex: dayStartIndex
             });
             var yearScroller = new SCS.scrollCascadeSelect({
-                el: "#scs_items_year",
+                el: "#" + navArr[0].id,
                 dataArr: YEARS,
                 startIndex: yearStartIndex,
                 onChange: function(selectedItem, selectedIndex) { //re-render dayScroller when yearScroller change
-                    dayScroller.render(getDaysByMonthNYear(1,selectedItem.key), 0);
+                    dayScroller.render(getDaysByMonthNYear(1, selectedItem.key), 0);
                 }
             });
             var monthScroller = new SCS.scrollCascadeSelect({
-                el: "#scs_items_month",
+                el: "#" + navArr[1].id,
                 dataArr: MONTHS,
                 startIndex: monthStartIndex,
                 onChange: function(selectedItem, selectedIndex) {
-                    dayScroller.render(getDaysByMonthNYear(selectedItem.key , yearScroller.getSelectedItem().key), 0); //re-render dayScroller when cityScroller change
+                    dayScroller.render(getDaysByMonthNYear(selectedItem.key, yearScroller.getSelectedItem().key), 0); //re-render dayScroller when cityScroller change
                 }
             });
             var hourScroller = new SCS.scrollCascadeSelect({
-                el: "#scs_items_hour",
+                el: "#" + navArr[3].id,
                 dataArr: HOURS,
                 startIndex: hourStartIndex
             });
             var minuteScroller = new SCS.scrollCascadeSelect({
-                el: "#scs_items_minute",
+                el: "#" + navArr[4].id,
                 dataArr: MINUTES,
                 startIndex: minuteStartIndex
             });
             var secondScroller = new SCS.scrollCascadeSelect({
-                el: "#scs_items_second",
+                el: "#" + navArr[5].id,
                 dataArr: SECONDS,
                 startIndex: secondStartIndex
             });
