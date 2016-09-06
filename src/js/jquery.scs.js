@@ -153,9 +153,12 @@
                         '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
                     });
                     _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
-                    This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
-                    options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
-                    havedClicked = false;
+                    setTimeout(function(){
+                        This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");        
+                        options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
+                        havedClicked = false;               
+                    },t);
+
                 } else {
                     havedClicked = true;
                 }
@@ -224,8 +227,10 @@
                         '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
                     });
                     _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
-                    This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
-                    options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
+                    setTimeout(function(){
+                        This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
+                        options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
+                    },t);
                 } else {
                     havedClicked = true;
                 }
@@ -270,8 +275,10 @@
                             '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
                         });
                         _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
-                        This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
-                        options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
+                        setTimeout(function(){
+                            This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
+                            options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
+                        },t);
                     } else {
                         havedClicked = true;
                     }

@@ -33,7 +33,12 @@
     <script src="../dist/js/CNAddrArr.min.js"></script>
     <script>
     $(function() {
-        //get the city/district data by id from source array 'addr_arr' 
+        /**
+         * 通过数组id获取地址列表数组
+         *
+         * @param {Number} id
+         * @return {Array} 
+         */ 
         function getAddrsArrayById(id) {
             var results = [];
             if (addr_arr[id] != undefined)
@@ -48,11 +53,17 @@
             }
             return results;
         }
-        //get the start index by key from the startArr, format: [{key:'1',val:'北京'},...].
-        function getStartIndexByKeyFromStartArr(StartArr, key) {
+        /**
+         * 通过开始的key获取开始时应该选中开始数组中哪个元素
+         *
+         * @param {Array} StartArr
+         * @param {Number|String} key
+         * @return {Number} 
+         */         
+        function getStartIndexByKeyFromStartArr(startArr, key) {
             var result = 0;
-            if (StartArr != undefined)
-                StartArr.forEach(function(obj, index) {
+            if (startArr != undefined)
+                startArr.forEach(function(obj, index) {
                     if (obj.key == key) {
                         result = index;
                         return false;

@@ -31,6 +31,13 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="../dist/js/jquery.scs.min.js"></script>
     <script>
+    /**
+     * 通过年和月计算出当月所有的日
+     *
+     * @param {Number} month
+     * @param {Number} year
+     * @return {Array} 
+     */       
     function getDaysByMonthNYear(month, year) {
         var count = 0,
             days = [];
@@ -53,7 +60,12 @@
         }
         return days;
     }
-
+    /**
+     * 计算是否为闰年
+     *
+     * @param {Number} year
+     * @return {Boolean} 
+     */
     function isLeapYear(Year) {
         if (((Year % 4) == 0) && ((Year % 100) != 0) || ((Year % 400) == 0)) {
             return true;
