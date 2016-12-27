@@ -9,9 +9,9 @@ Support swipping up / down, mouse dragging up / down are supported too
 
 check the example for details.
 
-or
+or live demo below:
 
-[live Demo](http://sandbox.runjs.cn/show/zmqwsarf), please use mobile phone mode to view the demo!
+[China Address](http://www.iampua.com/pui/jscs-address.html), please use mobile phone mode to view the demo! | [Date](http://www.iampua.com/pui/jscs-date.html), please use mobile phone mode to view the demo! | [Datetime](http://www.iampua.com/pui/jscs-datetime.html), please use mobile phone mode to view the demo!
 
 
 ##License:
