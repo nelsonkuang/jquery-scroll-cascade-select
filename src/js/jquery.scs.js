@@ -172,6 +172,7 @@
         } else {
             //bind all the mouse events
             el.addEventListener("mousedown", mouseDown);
+            el.addEventListener('wheel', onDocumentMouseWheel);
                 
             function mouseDown(e) { //mouse down event
                 isDown = true;
@@ -246,7 +247,7 @@
                 el.removeEventListener("mouseleave", mouseLeave);
             }
 
-            function mouseLeave(e) {
+            function mouseLeave(e) { //mouse leave event
                 if (isDown) {
                     endTime = (new Date()).getTime();
                     if (Math.abs(currentPosY - startPosY) > 5 && endTime - startTime > 20) { //exclude the 'click' event
@@ -293,6 +294,36 @@
                 el.removeEventListener("mousemove", mouseMove);
                 el.removeEventListener("mouseup", mouseUp);
                 el.removeEventListener("mouseleave", mouseLeave);
+            }
+            function onDocumentMouseWheel(e) { //mouse wheel event
+                startTranslatedY = parseInt(This.css("webkitTransform").split(",").pop().replace(" ", "").replace(")", ""));
+                currentTranslatedY = startTranslatedY + e.deltaY * 0.5;
+                var residue = currentTranslatedY % 40;
+                if (Math.abs(residue) >= 20) {
+                    if (residue < 0)
+                        currentTranslatedY += ((40 + residue) * -1);
+                    else {
+                        currentTranslatedY += (40 - residue);
+                    }
+                } else {
+                    currentTranslatedY -= residue;
+                }
+                if (currentTranslatedY > 80) {
+                    currentTranslatedY = 80;
+                } else if (currentTranslatedY < (This.attr("data-height") - 120) * (-1)) {
+                    currentTranslatedY = (This.attr("data-height") - 120) * (-1);
+                }
+                This.css({
+                    '-webkit-transition': '-webkit-transform ' + 0.2 + 's ease-out',
+                    '-webkit-transform': 'translate3d(0, ' + currentTranslatedY + 'px, 0)'
+                });
+                _self.selectedIndex = Math.abs((currentTranslatedY - 80) / (-40));
+                setTimeout(function () {
+                    This.find(".scs_item").removeClass("scs_selected").eq(_self.selectedIndex).addClass("scs_selected");
+                    options.onChange(_self.getSelectedItem(), _self.selectedIndex); //trigger onChange event
+                }, 100);
+                startTranslatedY = 0;
+                currentTranslatedY = 0;
             }
         }
 
