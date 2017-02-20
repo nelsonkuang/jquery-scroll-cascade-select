@@ -32,3 +32,8 @@ v1.0.1 (2016-05-23)
 
 - fixed desktops/laptops with touch/drag support scrolled wrongfully or failed to scroll sometimes
 - overwrited some mouse binding events
+
+v1.0.2 (2017-02-20)
+-------------------
+
+- Add scroll triggering options changing
