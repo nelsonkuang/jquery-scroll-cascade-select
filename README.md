@@ -4,7 +4,7 @@ Scroll Cascade Select, a light-weight flexible Scroll Picker similiar to Mobiscr
 Support swipping up / down, mouse dragging up / down are supported too
 
 
-##how to use it?
+## how to use it?
 
 
 check the example for details.
@@ -14,11 +14,11 @@ or live demo below:
 [China Address](http://www.iampua.com/pui/jscs-address.html) | [Date](http://www.iampua.com/pui/jscs-date.html) | [Datetime](http://www.iampua.com/pui/jscs-datetime.html), please use mobile phone mode to view the demos!
 
 
-##License:
+## License:
 
 [MIT](https://github.com/nelsonkuang/jquery-scroll-cascade-select/blob/master/LICENSE)
 
-##Todo:
+## Todo:
 
 ~~Add mouse dragging effect.~~
 
