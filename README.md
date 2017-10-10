@@ -24,7 +24,9 @@ or live demo below:
 
 Add more examples.
 
-~~Add scroll triggering options changing.~~
+~~Add scroll triggering options changing.~~   
+
+Code optimization.
 
 
 v1.0.1 (2016-05-23)
