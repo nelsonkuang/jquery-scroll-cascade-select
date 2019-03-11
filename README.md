@@ -11,7 +11,7 @@ check the example for details.
 
 or live demo below:
 
-[China Address](http://www.iampua.com/pui/jscs-address.html) | [Date](http://www.iampua.com/pui/jscs-date.html) | [Datetime](http://www.iampua.com/pui/jscs-datetime.html), please use mobile phone mode to view the demos!
+[China Address](http://www.a4z.cn/pui/jscs-address.html) | [Date](http://www.a4z.cn/pui/jscs-date.html) | [Datetime](http://www.a4z.cn/pui/jscs-datetime.html), please use mobile phone mode to view the demos!
 
 
 ## License:
